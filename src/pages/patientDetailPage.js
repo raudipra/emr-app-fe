@@ -71,13 +71,9 @@ export default function PatientDetailPage() {
     
     React.useEffect(() => {
         const getMedicalRecords = () => {
-            axios.get(`https://ckvy8eecxk.execute-api.us-east-1.amazonaws.com/dev/patient_detail/${id}`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                })
+            axios.post(`https://ckvy8eecxk.execute-api.us-east-1.amazonaws.com/dev/patient_detail`, { patient_id: id })
                 .then(res => {
-                    const data = res.data.body;
+                    const data = JSON.parse(res.data.body);
                     let tempRows = []
                     data.medical_records.forEach((mr) => {
                         tempRows.push(createData(mr.enc_id, mr.start_date, mr.category, 
@@ -106,17 +102,6 @@ export default function PatientDetailPage() {
                         console.log('Error', error.message);
                     }
                     console.log(error.config);
-                    console.log("IN");
-                    const data = JSON.parse('{   "person": {       "person_id": 152652,       "year_of_birth": 1994,       "month_of_birth": 10,       "day_of_birth": 1,       "birth_datetime": "10/1/94 0:00",       "gender_source_value": "Female",       "race_source_value": "White",       "first_name": "Jessica",       "last_name": "Smith"   },   "medical_records": [       {           "enc_id": 2003,           "start_date": "1/6/22 0:00",           "end_date": "1/6/22 0:00",           "category": "Encounter",           "type": "Outpatient",           "result": null       },       {           "enc_id": 2010,           "start_date": "4/6/22 0:00",           "end_date": "",           "category": "Encounter",           "type": "Inpatient",           "result": null       },       {           "enc_id": 2010,           "start_date": "4/6/22 0:00",           "end_date": "4/6/22 0:00",           "category": "Observation",           "type": "COVID 19 PCR Test",           "result": "Detected"       },       {           "enc_id": 2010,           "start_date": "4/7/22 0:00",           "end_date": "4/7/22 0:00",           "category": "Condition",           "type": "Admitting",           "result": "COVID19"       }   ]}');
-                    let tempRows = []
-                    console.log(data)
-                    data.medical_records.forEach((mr) => {
-                        tempRows.push(createData(mr.enc_id, mr.start_date, mr.category, 
-                            mr.type, mr.result, mr.end_date))
-                        }
-                    )
-                    setProfile([data.person])
-                    setRows(tempRows)
                 });
         }
         getMedicalRecords()
