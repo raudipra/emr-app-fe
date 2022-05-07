@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -7,7 +6,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Title from './title';
 
-export default function TableData(props) {
+export default function TableMedicalData(props) {
   return (
     <React.Fragment>
       <Title>{props.title}</Title>
@@ -20,10 +19,10 @@ export default function TableData(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {props.rows.map((row) => (
-            <TableRow component={Link} to={`/patients/${row[0]}`} key={row[0]}>
+          {props.rows.map((row, index_parent) => (
+            <TableRow onClick={() => props.handler(row)} key={row[0]+"_"+index_parent}>
               {row.map((item, index) => (
-                <TableCell key={row[0]+"_"+index}>{item}</TableCell>
+                index !== 5 && (<TableCell key={row[index]+"_"+index_parent}>{item}</TableCell>)
               ))}
             </TableRow>
           ))}

@@ -10,6 +10,8 @@ import MetricPage from './pages/metricPage';
 import SignInPage from './pages/signInPage';
 import SignUpPage from './pages/signUpPage'; 
 import PatientListPage from './pages/patientListPage'; 
+import PatientDetailPage from './pages/patientDetailPage';
+import CreatePatientPage from './pages/createPatientPage';
 
 const Router = () => {
     return (
@@ -33,6 +35,16 @@ const Router = () => {
             <Route path="/patients" element={(
                 <DashboardLayout>
                     <PatientListPage />
+                </DashboardLayout>
+            )} />
+            <Route path="/patients/:id" element={(
+                <DashboardLayout>
+                    <PatientDetailPage />
+                </DashboardLayout>
+            )} />
+            <Route path="/patients/create" element={(
+                <DashboardLayout>
+                    <CreatePatientPage />
                 </DashboardLayout>
             )} />
         </Routes>

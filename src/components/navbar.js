@@ -8,6 +8,12 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 
 export const mainListItems = (
   <React.Fragment>
+    <ListItemButton component={Link} to="/patients/create">
+        <ListItemIcon>
+            <PeopleIcon />
+        </ListItemIcon>
+        <ListItemText primary="Register Patient" />
+    </ListItemButton>
     <ListItemButton component={Link} to="/patients">
         <ListItemIcon>
             <PeopleIcon />
