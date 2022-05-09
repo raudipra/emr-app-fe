@@ -12,6 +12,7 @@ import SignUpPage from './pages/signUpPage';
 import PatientListPage from './pages/patientListPage'; 
 import PatientDetailPage from './pages/patientDetailPage';
 import CreatePatientPage from './pages/createPatientPage';
+import { ProtectedRoute } from './components/ProtectedComponent';
 
 const Router = () => {
     return (
@@ -27,26 +28,26 @@ const Router = () => {
                     <SignUpPage />
                 </AuthLayout>
             )} />
-            <Route path="/metric" element={(
-                <DashboardLayout>
+            <Route path="/metric" element={
+                <ProtectedRoute component={<DashboardLayout>
                     <MetricPage />
-                </DashboardLayout>
-            )} />
-            <Route path="/patients" element={(
-                <DashboardLayout>
+                </DashboardLayout>} />
+            } />            
+            <Route path="/patients" element={
+                <ProtectedRoute component={<DashboardLayout>
                     <PatientListPage />
-                </DashboardLayout>
-            )} />
-            <Route path="/patients/:id" element={(
-                <DashboardLayout>
-                    <PatientDetailPage />
-                </DashboardLayout>
-            )} />
-            <Route path="/patients/create" element={(
-                <DashboardLayout>
+                </DashboardLayout>} />
+            } />
+            <Route path="/patients/:id" element={
+            <ProtectedRoute component={<DashboardLayout>
+                <PatientDetailPage />
+            </DashboardLayout>} />
+            } />
+            <Route path="/patients/create" element={
+                <ProtectedRoute component={<DashboardLayout>
                     <CreatePatientPage />
-                </DashboardLayout>
-            )} />
+                </DashboardLayout>} />
+            } />
         </Routes>
     );
 }

@@ -8,13 +8,14 @@ import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { useAuth0 } from '@auth0/auth0-react';
 import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
 
 
 export default function SignInPage() {
-  const navigate = useNavigate();
-
+  const navigate = useNavigate()
+  const { loginWithRedirect } = useAuth0();
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -40,7 +41,7 @@ export default function SignInPage() {
         <Typography component="h1" variant="h5">
             Sign in
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={loginWithRedirect} noValidate sx={{ mt: 1 }}>
             <TextField
                 margin="normal"
                 required
