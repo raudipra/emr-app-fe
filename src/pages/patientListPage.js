@@ -9,7 +9,11 @@ export default function PatientListPage() {
 
     // Generate Order Data
     function createData(id, birthdate, first, last, dischargeDate) {
-        return [id, new Date(birthdate).toLocaleDateString('en-US'), first, last, new Date(dischargeDate).toLocaleDateString('en-US')];
+        var date = ""
+        if (dischargeDate){
+            date = new Date(dischargeDate).toLocaleDateString('en-US')
+        }
+        return [id, new Date(birthdate).toLocaleDateString('en-US'), first, last, date];
     }
 
     React.useEffect(() => {

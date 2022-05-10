@@ -25,7 +25,7 @@ export default function EncounterCard(props) {
                                     )}
                                     Admitted: {new Date(medicalRecord.start_date).toLocaleDateString("en-US")}
                                     <br />
-                                    Discharged: {new Date(medicalRecord.end_date).toLocaleDateString("en-US")}
+                                    Discharged: {medicalRecord.end_date}
                                     <br />
                                 </Typography>
                             </CardContent>
