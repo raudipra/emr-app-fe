@@ -7,12 +7,15 @@ import reportWebVitals from './reportWebVitals';
 
 const domain = process.env.REACT_APP_AUTH0_DOMAIN;
 const clientId = process.env.REACT_APP_CLIENT_ID;
+export const apiDomain = 'ckvy8eecxk.execute-api.us-east-1.amazonaws.com';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Auth0Provider
     domain={domain}
     clientId={clientId}
-    redirectUri={'http://localhost:3000/metrics'}>
+    redirectUri={'http://localhost:3000/metric'}
+    audience={'https://ckvy8eecxk.execute-api.us-east-1.amazonaws.com/dev/'}
+    scope={"read: current_user update:current_user_metadatta"}>
     <App />
   </Auth0Provider>
 );

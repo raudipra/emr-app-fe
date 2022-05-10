@@ -1,19 +1,30 @@
 import * as React from 'react';
+import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { Chart, Counter } from '../components';
 
-export default function MetricPage() {
+ export default function MetricPage() {
     const [totalCovid, setTotalCovid] = React.useState(-1);
     const [currentCovid, setCurrentCovid] = React.useState(-1);
     const [currentAdmit, setCurrentAdmit] = React.useState(-1);
     const [encType, setEncType] = React.useState([]);
     const [admittedEncType, setAdmittedEncType] = React.useState([]);
 
+    const { getAccessTokenSilently } = useAuth0();
+
     React.useEffect(() => {
-        const getMetrics = () => {
-            axios.get(`https://ckvy8eecxk.execute-api.us-east-1.amazonaws.com/dev/metrics`)
+        const getMetrics = async () => {
+            try {
+                const accessToken = await getAccessTokenSilently({
+                    audience:`https://ckvy8eecxk.execute-api.us-east-1.amazonaws.com/dev/`,
+                    scope: "read:current_user"
+                });
+                const header = {
+                    Autherization: `Bearer ${accessToken}`
+                };
+                axios.get(`https://ckvy8eecxk.execute-api.us-east-1.amazonaws.com/dev/metrics`, { headers: header})
                 .then(res => {
                     const data = res.data;
                     setCurrentAdmit(data.metrics.current_admits)
@@ -50,9 +61,12 @@ export default function MetricPage() {
                     }
                     console.log(error.config);
                 });
+        } catch (e) {
+            console.log(e.message);
         }
-        getMetrics()
-    }, []);
+    }
+    getMetrics();
+  }, []);
 
     return (
         <Grid container spacing={3}>

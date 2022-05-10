@@ -10,6 +10,7 @@ import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useAuth0 } from '@auth0/auth0-react';
 import { PatientForm } from '../components';
 
 const theme = createTheme();
@@ -17,9 +18,17 @@ const theme = createTheme();
 export default function CreatePatientPage() {
   const [activeStep, setActiveStep] = React.useState(0);
   const [status, setStatus] = React.useState(false);
+  const { getAccessTokenSilently } = useAuth0();
 
-  const handleNext = (patient) => {
-    axios.put(`https://ckvy8eecxk.execute-api.us-east-1.amazonaws.com/dev/create_patient`, patient)
+  const handleNext = async (patient) => {
+    const accessToken = await getAccessTokenSilently({
+      audience:`https://ckvy8eecxk.execute-api.us-east-1.amazonaws.com/dev/`,
+      scope: "read:current_user"
+    });
+    const header = {
+      Autherization: `Bearer ${accessToken}`
+    };
+    axios.put(`https://ckvy8eecxk.execute-api.us-east-1.amazonaws.com/dev/create_patient`, patient, { headers: header})
       .then(res => {
         setStatus(true);
         setActiveStep(activeStep + 1);
