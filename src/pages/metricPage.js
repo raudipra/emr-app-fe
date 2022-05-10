@@ -1,28 +1,104 @@
 import * as React from 'react';
+import axios from 'axios';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { Chart, Counter, TableData } from '../components';
+import { Chart, Counter } from '../components';
 
 export default function MetricPage() {
-    // Generate Order Data
-    function createData(id, date, name, branch, paymentMethod, amount) {
-        return [id, date, name, branch, paymentMethod, amount];
-    }
-    
-    const rows = [
-        createData(0, '16 Mar, 2019', 'Elvis Presley', 'Tupelo, MS', 'VISA ⠀•••• 3719', '$312.44'),
-        createData(1, '16 Mar, 2019', 'Paul McCartney', 'London, UK', 'VISA ⠀•••• 2574', '$866.99'),
-        createData(2, '16 Mar, 2019', 'Tom Scholz', 'Boston, MA', 'MC ⠀•••• 1253', '$100.81'),
-        createData(3, '16 Mar, 2019', 'Michael Jackson', 'Gary, IN', 'AMEX ⠀•••• 2000', '$654.39'),
-        createData(4, '15 Mar, 2019', 'Bruce Springsteen', 'Long Branch, NJ', 'VISA ⠀•••• 5919', '$212.79'),
-    ];
-    const columns = ['ID', 'Date', 'Name', 'Branch', 'Payment Method', 'Sale Amount'];
-    const title = "Transaction"
+    const [totalCovid, setTotalCovid] = React.useState(-1);
+    const [currentCovid, setCurrentCovid] = React.useState(-1);
+    const [currentAdmit, setCurrentAdmit] = React.useState(-1);
+    const [encType, setEncType] = React.useState([]);
+    const [admittedEncType, setAdmittedEncType] = React.useState([]);
+
+    React.useEffect(() => {
+        const getMetrics = () => {
+            axios.get(`https://ckvy8eecxk.execute-api.us-east-1.amazonaws.com/dev/metrics`)
+                .then(res => {
+                    const data = res.data;
+                    setCurrentAdmit(data.metrics.current_admits)
+                    setTotalCovid(data.metrics.total_covid_cases)
+                    setCurrentCovid(data.metrics.current_covid_cases)
+                    let tempEncType = []
+                    Object.keys(data.metrics.enc_types).forEach(function(key) {
+                        tempEncType.push({name: key, number_of_patient: data.metrics.enc_types[key]})
+                    })
+                    setEncType(tempEncType)
+                    let tempAdmittedEncType = []
+                    Object.keys(data.metrics.admitted_enc_types).forEach(function(key) {
+                        tempAdmittedEncType.push({name: key, number_of_patient: data.metrics.admitted_enc_types[key]})
+                    })
+                    setAdmittedEncType(tempAdmittedEncType)
+                })
+                .catch((error) => {
+                    // Error
+                    if (error.response) {
+                        // The request was made and the server responded with a status code
+                        // that falls out of the range of 2xx
+                        console.log(error.response.data);
+                        console.log(error.response.status);
+                        console.log(error.response.headers);
+                    } else if (error.request) {
+                        // The request was made but no response was received
+                        // `error.request` is an instance of XMLHttpRequest in the 
+                        // browser and an instance of
+                        // http.ClientRequest in node.js
+                        console.log(error.request);
+                    } else {
+                        // Something happened in setting up the request that triggered an Error
+                        console.log('Error', error.message);
+                    }
+                    console.log(error.config);
+                });
+        }
+        getMetrics()
+    }, []);
 
     return (
         <Grid container spacing={3}>
-            {/* Chart */}
-            <Grid item xs={12} md={8} lg={9}>
+            <Grid item xs={12} md={4} lg={4}>
+                <Paper
+                sx={{
+                    p: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: 240,
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}
+                >
+                    <Counter title="Current Admits" val={currentAdmit}/>
+                </Paper>
+            </Grid>
+            <Grid item xs={12} md={4} lg={4}>
+                <Paper
+                sx={{
+                    p: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: 240,
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}
+                >
+                    <Counter title="Current COVID Case" val={currentCovid}/>
+                </Paper>
+            </Grid>
+            <Grid item xs={12} md={4} lg={4}>
+                <Paper
+                sx={{
+                    p: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: 240,
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}
+                >
+                    <Counter title="Total COVID Case" val={totalCovid}/>
+                </Paper>
+            </Grid>
+            <Grid item xs={12} md={6} lg={6}>
                 <Paper
                 sx={{
                     p: 2,
@@ -31,11 +107,10 @@ export default function MetricPage() {
                     height: 240,
                 }}
                 >
-                <Chart />
+                <Chart title="Patient by Encounter Type" data={encType}/>
                 </Paper>
             </Grid>
-            {/* Recent Deposits */}
-            <Grid item xs={12} md={4} lg={3}>
+            <Grid item xs={12} md={6} lg={6}>
                 <Paper
                 sx={{
                     p: 2,
@@ -44,13 +119,7 @@ export default function MetricPage() {
                     height: 240,
                 }}
                 >
-                <Counter />
-                </Paper>
-            </Grid>
-            {/* Recent Orders */}
-            <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                <TableData title={title} rows={rows} columns={columns} />
+                <Chart title="Admitted Patient by Encounter Type" data={admittedEncType}/>
                 </Paper>
             </Grid>
         </Grid>
